@@ -108,20 +108,10 @@ class DjangoMigrations(models.Model):
         db_table = 'django_migrations'
 
 
-class DjangoSession(models.Model):
-    session_key = models.CharField(primary_key=True, max_length=40)
-    session_data = models.TextField()
-    expire_date = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'django_session'
-
-
 class TblClub(models.Model):
-    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=45)
-    code = models.CharField(max_length=6)
+    code = models.CharField(unique=True, max_length=6)
+    password = models.CharField(max_length=60)
     profile_path = models.CharField(max_length=255, blank=True, null=True)
     banner_path = models.CharField(max_length=255, blank=True, null=True)
     contents = models.CharField(max_length=256, blank=True, null=True)
@@ -132,41 +122,41 @@ class TblClub(models.Model):
 
 
 class TblClubTag(models.Model):
-    id = models.IntegerField(primary_key=True)
-    club = models.ForeignKey(TblClub, models.DO_NOTHING)
     tag = models.ForeignKey('TblTag', models.DO_NOTHING)
+    club = models.ForeignKey(TblClub, models.DO_NOTHING)
 
     class Meta:
         managed = False
         db_table = 'tbl_club_tag'
+        unique_together = (('id', 'tag', 'club'),)
 
 
 class TblProjectIntroduction(models.Model):
-    id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=50)
     contents = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
-    started_at = models.DateTimeField(blank=True, null=True)
+    started_at = models.DateTimeField()
     ended_at = models.DateTimeField(blank=True, null=True)
-    tbl_club = models.ForeignKey(TblClub, models.DO_NOTHING)
+    club = models.ForeignKey(TblClub, models.DO_NOTHING)
 
     class Meta:
+        managed = True
         db_table = 'tbl_project_introduction'
+        unique_together = (('id', 'club'),)
 
 
 class TblProjectIntroductionImage(models.Model):
-    id = models.IntegerField(primary_key=True)
     path = models.CharField(max_length=255)
-    tbl_project_introduction = models.ForeignKey(TblProjectIntroduction, models.DO_NOTHING)
+    project_introduction = models.ForeignKey(TblProjectIntroduction, models.DO_NOTHING)
 
     class Meta:
         managed = False
         db_table = 'tbl_project_introduction_image'
+        unique_together = (('id', 'project_introduction'),)
 
 
 class TblTag(models.Model):
-    id = models.IntegerField(primary_key=True)
     tag_type = models.CharField(max_length=10)
 
     class Meta:
