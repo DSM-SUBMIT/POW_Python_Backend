@@ -1,0 +1,6 @@
+venv/
+media/
+.vscode/
+db.sqlite3
+static/
+settings.py
