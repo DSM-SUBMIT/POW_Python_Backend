@@ -123,12 +123,12 @@ class TblClub(models.Model):
 
 class TblClubTag(models.Model):
     tag = models.ForeignKey('TblTag', models.DO_NOTHING)
-    club = models.ForeignKey(TblClub, models.DO_NOTHING)
+    club_id = models.ForeignKey(TblClub, models.DO_NOTHING, db_column='club_id')
 
     class Meta:
         managed = False
         db_table = 'tbl_club_tag'
-        unique_together = (('id', 'tag', 'club'),)
+        unique_together = (('id', 'tag', 'club_id'),)
 
 
 class TblProjectIntroduction(models.Model):
@@ -138,12 +138,12 @@ class TblProjectIntroduction(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     started_at = models.DateTimeField()
     ended_at = models.DateTimeField(blank=True, null=True)
-    club = models.ForeignKey(TblClub, models.DO_NOTHING)
+    club_id = models.ForeignKey(TblClub, models.DO_NOTHING, db_column='club_id')
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'tbl_project_introduction'
-        unique_together = (('id', 'club'),)
+        unique_together = (('id', 'club_id'),)
 
 
 class TblProjectIntroductionImage(models.Model):
