@@ -1,0 +1,1 @@
+python ./manage.py shell < ./club_project/tests.py
