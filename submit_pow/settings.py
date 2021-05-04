@@ -28,7 +28,7 @@ SECRET_KEY = 'powerof202!pow'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1', 'floating-brook-63809.herokuapp.com']
 
 
 # Application definition
