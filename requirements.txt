@@ -16,3 +16,5 @@ requests==2.25.1
 sqlparse==0.4.1
 urllib3==1.26.4
 mysqlclient==1.4.6
+gunicorn
+django-heroku
