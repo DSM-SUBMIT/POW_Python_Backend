@@ -117,7 +117,7 @@ class TblClub(models.Model):
     contents = models.CharField(max_length=256, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'tbl_club'
 
 
@@ -126,7 +126,7 @@ class TblClubTag(models.Model):
     club_id = models.ForeignKey(TblClub, models.DO_NOTHING, db_column='club_id')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'tbl_club_tag'
         unique_together = (('id', 'tag', 'club_id'),)
 
@@ -141,7 +141,7 @@ class TblProjectIntroduction(models.Model):
     club_id = models.ForeignKey(TblClub, models.DO_NOTHING, db_column='club_id')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'tbl_project_introduction'
         unique_together = (('id', 'club_id'),)
 
@@ -151,7 +151,7 @@ class TblProjectIntroductionImage(models.Model):
     project_introduction = models.ForeignKey(TblProjectIntroduction, models.DO_NOTHING)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'tbl_project_introduction_image'
         unique_together = (('id', 'project_introduction'),)
 
@@ -160,5 +160,5 @@ class TblTag(models.Model):
     tag_type = models.CharField(max_length=10)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'tbl_tag'
