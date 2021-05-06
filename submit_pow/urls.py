@@ -27,8 +27,3 @@ urlpatterns = [
     path('api/token/verify/', verify_jwt_token),
     path('api/token/refresh/', refresh_jwt_token),
 ]
-
-urlpatterns += [
-    re_path(r'^%s(?P.*)$' % re.escape(settings.STATIC_URL.lstrip('/')), serve,
-            kwargs={'document_root': settings.STATIC_ROOT})
-]
