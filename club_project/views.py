@@ -1,7 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.shortcuts import get_object_or_404
 
 from club_project import serializers
@@ -15,7 +14,7 @@ import jwt
 def verify_authentication_token(request, club_id):
     token = jwt.decode(request.auth, settings.SECRET_KEY, algorithms=["HS256"])
     # {'user_id': 1, 'username': 'kwak', 'exp': 1619447947, 'email': 'kwak@kwak.com', 'orig_iat': 1618843147}
-    return token['club_id'] != club_id
+    return token['club_id'] != club_id4
 
 
 class ProjectAPIView(APIView):
@@ -25,7 +24,7 @@ class ProjectAPIView(APIView):
     def get(self, request, club_id, format=None):
         queryset = TblProjectIntroduction.objects.filter(club_id=club_id)
         serializer = self.serializer_class(queryset, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=200)
 
     def post(self, request, club_id):
         """Create a project object"""
@@ -88,7 +87,7 @@ class ProjectDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ClubIntroUpdateAPIView(APIView):
+class ClubAPIView(APIView):
 
     serializer_class = serializers.ClubSerializer
 
@@ -126,3 +125,13 @@ class ClubIntroUpdateAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, club_id):
+        if verify_authentication_token(request, club_id):
+            return Response(
+                {"error_message": "You don't have permission to delete"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        project = get_object_or_404(TblClub.objects.filter(pk=club_id))
+        project.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
