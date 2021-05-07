@@ -1,1 +1,1 @@
-web: gunicorn submit_pow.wsgi
+web: gunicorn submit_pow.wsgi --log-file -
