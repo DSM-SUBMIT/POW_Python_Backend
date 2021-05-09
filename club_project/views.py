@@ -14,7 +14,7 @@ import jwt
 def verify_authentication_token(request, club_id):
     token = jwt.decode(request.auth, settings.SECRET_KEY, algorithms=["HS256"])
     # {'user_id': 1, 'username': 'kwak', 'exp': 1619447947, 'email': 'kwak@kwak.com', 'orig_iat': 1618843147}
-    return token['club_id'] != club_id4
+    return token['club_id'] != club_id
 
 
 class ProjectAPIView(APIView):
