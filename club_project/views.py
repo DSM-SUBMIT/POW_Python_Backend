@@ -115,7 +115,7 @@ class ClubAPIView(APIView):
         club.contents = request.data['contents']
         club.save()
 
-        serializer = self.serializer_class(club)
+        serializer = self.serializer_class(TblClub, id=club_id)
 
         if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_200_OK)
