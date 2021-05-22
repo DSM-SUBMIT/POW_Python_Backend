@@ -114,4 +114,9 @@ class ClubAPIView(APIView):
         club = get_object_or_404(TblClub.objects.filter(id=club_id))
         club.contents = request.data['contents']
         club.save()
+
+        serializer = self.serializer_class(club)
+
+        if serializer.is_valid():
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_204_NO_CONTENT)
