@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'sdjfbka@lsbeiwolfnjik@!we')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'fiodsjfl34%sdfkls#jlkds!@#$#@weltkgndl@#')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1', 'powerofpow.herokuapp.c
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +44,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'club_project.apps.ClubProjectConfig',
-    'corsheaders',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
