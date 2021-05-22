@@ -71,7 +71,7 @@ class ProjectDetailAPIView(APIView):
         """Project detail"""
         project = self.get_object(club_id, project_id)
         serializer = self.serializer_class(project)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, club_id, project_id):
         """Update project"""
@@ -84,7 +84,7 @@ class ProjectDetailAPIView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
