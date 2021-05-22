@@ -17,3 +17,4 @@ class ClubSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.TblClub
         fields = '__all__'
+        read_only_fields = ('name', 'code', 'password', 'profile_path', 'banner_path', )
