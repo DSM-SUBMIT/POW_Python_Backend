@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 
-from club_project import serializers
+from club_project.serializers import ProjectSerializer
 from club_project.models import TblProjectIntroduction, TblClub
 
 from submit_pow import settings
@@ -32,22 +33,18 @@ def return_401_or_403(res_club_id, club_id):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProjectAPIView(APIView):
-    """동아리별로 프로젝트를 보거나 생성"""
-    serializer_class = serializers.ProjectSerializer
-
-    def get(self, request, club_id):
+@api_view(['GET', 'POST'])
+def post_list(request, club_id):
+    if request.method == 'GET':
         queryset = TblProjectIntroduction.objects.filter(club_id=club_id)
-        serializer = self.serializer_class(queryset, many=True)
+        serializer = ProjectSerializer(queryset, many=True)
         return Response(serializer.data, status=200)
-
-    def post(self, request, club_id):
-        """Create a project object"""
+    else:
         res_club_id = verify_auth_token(request)
-        if not res_club_id or res_club_id != club_id:
-            return return_401_or_403(res_club_id, club_id)
+        if not res_club_id or res_club_id != request.data['club_id']:
+            return return_401_or_403(res_club_id, request.data['club_id'])
 
-        serializer = self.serializer_class(data=request.data)
+        serializer = ProjectSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -59,9 +56,23 @@ class ProjectAPIView(APIView):
             )
 
 
-class ProjectDetailAPIView(APIView):
+@api_view(['PUT'])
+def club_update(request, club_id):
+    """Update a club introduction(contents)"""
+    res_club_id = verify_auth_token(request)
+    if not res_club_id or res_club_id != club_id:
+        return return_401_or_403(res_club_id, club_id)
 
-    serializer_class = serializers.ProjectSerializer
+    club = get_object_or_404(TblClub.objects.filter(id=club_id))
+    club.contents = request.data['contents']
+    club.save()
+
+    return Response({"contents": club.contents}, status=status.HTTP_200_OK)
+
+
+class ProjectDetailView(APIView):
+
+    serializer_class = ProjectSerializer
 
     @staticmethod
     def get_object(club_id, project_id):
@@ -76,8 +87,9 @@ class ProjectDetailAPIView(APIView):
     def put(self, request, club_id, project_id):
         """Update project"""
         res_club_id = verify_auth_token(request)
-        if not res_club_id or res_club_id != club_id:
-            return return_401_or_403(res_club_id, club_id)
+        # print(request.data['club_id'] + res_club_id)
+        if not res_club_id or res_club_id != int(request.data['club_id']):
+            return return_401_or_403(res_club_id, int(request.data['club_id']))
 
         project = self.get_object(club_id, project_id)
         serializer = self.serializer_class(project, data=request.data)
@@ -93,30 +105,10 @@ class ProjectDetailAPIView(APIView):
     def delete(self, request, club_id, project_id):
         """Delete a project object"""
         res_club_id = verify_auth_token(request)
-        if not res_club_id or res_club_id != club_id:
-            return return_401_or_403(res_club_id, club_id)
 
         project = self.get_object(club_id, project_id)
+        if not res_club_id or res_club_id != project.club_id.id:
+            return return_401_or_403(res_club_id, project.club_id)
+
         project.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class ClubAPIView(APIView):
-
-    serializer_class = serializers.ClubSerializer
-
-    def put(self, request, club_id):
-        """Update a club introduction(contents)"""
-        res_club_id = verify_auth_token(request)
-        if not res_club_id or res_club_id != club_id:
-            return return_401_or_403(res_club_id, club_id)
-
-        club = get_object_or_404(TblClub.objects.filter(id=club_id))
-        club.contents = request.data['contents']
-        club.save()
-
-        serializer = self.serializer_class(TblClub, id=club_id)
-
-        if serializer.is_valid():
-            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_204_NO_CONTENT)
