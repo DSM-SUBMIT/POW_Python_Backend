@@ -87,11 +87,11 @@ class ProjectDetailView(APIView):
     def put(self, request, club_id, project_id):
         """Update project"""
         res_club_id = verify_auth_token(request)
-        # print(request.data['club_id'] + res_club_id)
+
         if not res_club_id or res_club_id != int(request.data['club_id']):
             return return_401_or_403(res_club_id, int(request.data['club_id']))
 
-        project = self.get_object(club_id, project_id)
+        project = TblProjectIntroduction()
         serializer = self.serializer_class(project, data=request.data)
 
         if serializer.is_valid():
