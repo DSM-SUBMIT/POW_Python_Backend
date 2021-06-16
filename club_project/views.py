@@ -13,10 +13,14 @@ import jwt
 
 
 def verify_auth_token(request):
-    auth = request.headers['Authorization']
+    try:
+        auth = request.headers['Authorization']
+    except KeyError:
+        return 0
     token = auth.replace('Bearer ', '')
     token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-    return token['club_id']
+    return int(token['sub'])
+
 
 def return_401_or_403(res_club_id, club_id):
     if not res_club_id:
