@@ -95,7 +95,7 @@ class ProjectDetailView(APIView):
         if not res_club_id or res_club_id != int(request.data['club_id']):
             return return_401_or_403(res_club_id, int(request.data['club_id']))
 
-        project = TblProjectIntroduction()
+        project = self.get_object(club_id, project_id)
         serializer = self.serializer_class(project, data=request.data)
 
         if serializer.is_valid():
