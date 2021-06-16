@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from club_project import views
+from submit_pow import views
 
 
 urlpatterns = [
