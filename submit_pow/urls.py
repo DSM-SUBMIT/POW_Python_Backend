@@ -21,5 +21,5 @@ from submit_pow import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('club/', include('club_project.urls')),
-    path('token/<int:club_id>/', views.return_jwt, name='jwt'),
+    # path('token/<int:club_id>/', views.return_jwt, name='jwt'),
 ]
