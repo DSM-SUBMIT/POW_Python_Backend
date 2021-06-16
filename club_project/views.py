@@ -110,8 +110,8 @@ class ProjectDetailView(APIView):
         """Delete a project object"""
         res_club_id = verify_auth_token(request)
 
-        if not res_club_id or res_club_id != project_id:
-            return return_401_or_403(res_club_id, project_id)
+        if not res_club_id or res_club_id != club_id:
+            return return_401_or_403(res_club_id, club_id)
 
         project = self.get_object(club_id, project_id)
         project.delete()
