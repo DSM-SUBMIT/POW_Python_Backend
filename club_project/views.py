@@ -9,6 +9,7 @@ from club_project.models import TblProjectIntroduction, TblClub
 
 from submit_pow import settings
 
+from jwt.exceptions import ExpiredSignatureError
 import jwt
 
 
@@ -63,7 +64,11 @@ def post_list(request, club_id):
 @api_view(['PUT'])
 def club_update(request, club_id):
     """Update a club introduction(contents)"""
-    res_club_id = verify_auth_token(request)
+    try:
+        res_club_id = verify_auth_token(request)
+    except ExpiredSignatureError as e:
+        return Response({"error_message": "만료된 토큰"}, status=status.HTTP_403_FORBIDDEN)
+
     if not res_club_id or res_club_id != club_id:
         return return_401_or_403(res_club_id, club_id)
 
