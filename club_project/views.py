@@ -15,16 +15,12 @@ import jwt
 
 def verify_auth_token(request):
     try:
-        try:
-            auth = request.headers['Authorization']
-        except KeyError:
-            return 0
+        auth = request.headers['Authorization']
         token = auth.replace('Bearer ', '')
         token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-    except ExpiredSignatureError:
-
+        return int(token['sub'])
+    except (KeyError, ExpiredSignatureError):
         return 0
-    return int(token['sub'])
 
 
 def return_401_or_403(res_club_id, club_id):
@@ -101,8 +97,8 @@ class ProjectDetailView(APIView):
         """Update project"""
         res_club_id = verify_auth_token(request)
 
-        if not res_club_id or res_club_id != int(request.data['club_id']):
-            return return_401_or_403(res_club_id, int(request.data['club_id']))
+        if not res_club_id or res_club_id != int(request.data['club']):
+            return return_401_or_403(res_club_id, int(request.data['club']))
 
         project = self.get_object(club_id, project_id)
         serializer = self.serializer_class(project, data=request.data)
