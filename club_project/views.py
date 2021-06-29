@@ -15,11 +15,15 @@ import jwt
 
 def verify_auth_token(request):
     try:
-        auth = request.headers['Authorization']
-    except KeyError:
+        try:
+            auth = request.headers['Authorization']
+        except KeyError:
+            return 0
+        token = auth.replace('Bearer ', '')
+        token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+    except ExpiredSignatureError:
+
         return 0
-    token = auth.replace('Bearer ', '')
-    token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
     return int(token['sub'])
 
 
@@ -67,7 +71,7 @@ def club_update(request, club_id):
     try:
         res_club_id = verify_auth_token(request)
     except ExpiredSignatureError as e:
-        return Response({"error_message": "만료된 토큰"}, status=status.HTTP_403_FORBIDDEN)
+        return Response({"error_message": "만료된 토큰"}, status=status.HTTP_401_UNAUTHORIZED)
 
     if not res_club_id or res_club_id != club_id:
         return return_401_or_403(res_club_id, club_id)
@@ -113,6 +117,7 @@ class ProjectDetailView(APIView):
 
     def delete(self, request, club_id, project_id):
         """Delete a project object"""
+
         res_club_id = verify_auth_token(request)
 
         if not res_club_id or res_club_id != club_id:
